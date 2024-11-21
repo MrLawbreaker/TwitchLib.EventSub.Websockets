@@ -343,7 +343,7 @@ namespace TwitchLib.EventSub.Websockets
         /// <param name="serviceProvider">DI Container to resolve other dependencies dynamically</param>
         /// <param name="websocketClient">Underlying Websocket client to connect to connect to EventSub Websocket service</param>
         /// <exception cref="ArgumentNullException">Throws ArgumentNullException if a dependency is null</exception>
-        public EventSubWebsocketClient ( ILogger<EventSubWebsocketClient> logger, IEnumerable<INotificationHandler> handlers, IServiceProvider serviceProvider, WebsocketClient websocketClient )
+        public EventSubWebsocketClient(ILogger<EventSubWebsocketClient> logger, IEnumerable<INotificationHandler> handlers, IServiceProvider serviceProvider, WebsocketClient websocketClient)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _serviceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
@@ -362,7 +362,7 @@ namespace TwitchLib.EventSub.Websockets
         /// Instantiates an EventSubWebsocketClient used to subscribe to EventSub notifications via Websockets.
         /// </summary>
         /// <param name="loggerFactory">LoggerFactory used to construct Loggers for the EventSubWebsocketClient and underlying classes</param>
-        public EventSubWebsocketClient ( ILoggerFactory loggerFactory = null )
+        public EventSubWebsocketClient(ILoggerFactory loggerFactory = null)
         {
             _loggerFactory = loggerFactory;
 
@@ -394,7 +394,7 @@ namespace TwitchLib.EventSub.Websockets
         /// </summary>
         /// <param name="url">Optional url param to be able to connect to reconnect urls provided by Twitch or test servers</param>
         /// <returns>true: Connection successful false: Connection failed</returns>
-        public async Task<bool> ConnectAsync ( Uri url = null )
+        public async Task<bool> ConnectAsync(Uri url = null)
         {
             url = url ?? new Uri(WEBSOCKET_URL);
             _lastReceived = DateTimeOffset.MinValue;
@@ -417,7 +417,7 @@ namespace TwitchLib.EventSub.Websockets
         /// Disconnect from Twitch EventSub Websockets
         /// </summary>
         /// <returns>true: Disconnect successful false: Disconnect failed</returns>
-        public async Task<bool> DisconnectAsync ()
+        public async Task<bool> DisconnectAsync()
         {
             _cts?.Cancel();
             return await _websocketClient.DisconnectAsync();
@@ -427,7 +427,7 @@ namespace TwitchLib.EventSub.Websockets
         /// Reconnect to Twitch EventSub Websockets with a Twitch given Url
         /// </summary>
         /// <returns>true: Reconnect successful false: Reconnect failed</returns>
-        public Task<bool> ReconnectAsync ()
+        public Task<bool> ReconnectAsync()
         {
             return ReconnectAsync(new Uri(WEBSOCKET_URL));
         }
@@ -437,7 +437,7 @@ namespace TwitchLib.EventSub.Websockets
         /// </summary>
         /// <param name="url">New Websocket Url to connect to, to preserve current session and topics</param>
         /// <returns>true: Reconnect successful false: Reconnect failed</returns>
-        private async Task<bool> ReconnectAsync ( Uri url )
+        private async Task<bool> ReconnectAsync(Uri url)
         {
             url = url ?? new Uri(WEBSOCKET_URL);
 
@@ -509,7 +509,7 @@ namespace TwitchLib.EventSub.Websockets
         /// Setup handlers for all supported subscription types
         /// </summary>
         /// <param name="handlers">Enumerable of handlers that are responsible for acting on a specified subscription type</param>
-        private void PrepareHandlers ( IEnumerable<INotificationHandler> handlers )
+        private void PrepareHandlers(IEnumerable<INotificationHandler> handlers)
         {
             _handlers = _handlers ?? new Dictionary<string, Action<EventSubWebsocketClient, string, JsonSerializerOptions>>();
 
@@ -529,7 +529,7 @@ namespace TwitchLib.EventSub.Websockets
         /// <para>E.g. a Twitch specified 10 seconds minimum frequency would result in 12 seconds used by the client to honor network latencies and so on.</para>
         /// </summary>
         /// <returns>a Task that represents the background operation</returns>
-        private async Task ConnectionCheckAsync ()
+        private async Task ConnectionCheckAsync()
         {
             while (_cts != null && _websocketClient.IsConnected && !_cts.IsCancellationRequested)
             {
@@ -551,7 +551,7 @@ namespace TwitchLib.EventSub.Websockets
         /// </summary>
         /// <param name="sender">Sender of the event. In this case <see cref="WebsocketClient"/></param>
         /// <param name="e">EventArgs send with the event. <see cref="DataReceivedArgs"/></param>
-        private async Task OnDataReceived ( object sender, DataReceivedArgs e )
+        private async Task OnDataReceived(object sender, DataReceivedArgs e)
         {
             _lastReceived = DateTimeOffset.Now;
 
@@ -596,7 +596,7 @@ namespace TwitchLib.EventSub.Websockets
         /// </summary>
         /// <param name="sender">Sender of the event. In this case <see cref="WebsocketClient"/></param>
         /// <param name="e">EventArgs send with the event. <see cref="ErrorOccuredArgs"/></param>
-        private async Task OnErrorOccurred ( object sender, ErrorOccuredArgs e )
+        private async Task OnErrorOccurred(object sender, ErrorOccuredArgs e)
         {
             await ErrorOccurred.InvokeAsync(this, e);
         }
@@ -605,7 +605,7 @@ namespace TwitchLib.EventSub.Websockets
         /// Handles 'session_reconnect' notifications
         /// </summary>
         /// <param name="message">notification message received from Twitch EventSub</param>
-        private void HandleReconnect ( string message )
+        private void HandleReconnect(string message)
         {
             _logger?.LogReconnectRequested(SessionId);
             var data = JsonSerializer.Deserialize<EventSubWebsocketSessionInfoMessage>(message, _jsonSerializerOptions);
@@ -620,7 +620,7 @@ namespace TwitchLib.EventSub.Websockets
         /// Handles 'session_welcome' notifications
         /// </summary>
         /// <param name="message">notification message received from Twitch EventSub</param>
-        private async ValueTask HandleWelcome ( string message )
+        private async ValueTask HandleWelcome(string message)
         {
             var data = JsonSerializer.Deserialize<EventSubWebsocketSessionInfoMessage>(message, _jsonSerializerOptions);
 
@@ -644,7 +644,7 @@ namespace TwitchLib.EventSub.Websockets
         /// Handles 'session_disconnect' notifications
         /// </summary>
         /// <param name="message">notification message received from Twitch EventSub</param>
-        private async Task HandleDisconnect ( string message )
+        private async Task HandleDisconnect(string message)
         {
             var data = JsonSerializer.Deserialize<EventSubWebsocketSessionInfoMessage>(message);
 
@@ -658,7 +658,7 @@ namespace TwitchLib.EventSub.Websockets
         /// Handles 'session_keepalive' notifications
         /// </summary>
         /// <param name="message">notification message received from Twitch EventSub</param>
-        private void HandleKeepAlive ( string message )
+        private void HandleKeepAlive(string message)
         {
             _logger?.LogMessage(message);
         }
@@ -668,7 +668,7 @@ namespace TwitchLib.EventSub.Websockets
         /// </summary>
         /// <param name="message">notification message received from Twitch EventSub</param>
         /// <param name="subscriptionType">subscription type received from Twitch EventSub</param>
-        private void HandleNotification ( string message, string subscriptionType )
+        private void HandleNotification(string message, string subscriptionType)
         {
             if (_handlers != null && _handlers.TryGetValue(subscriptionType, out var handler))
                 handler(this, message, _jsonSerializerOptions);
@@ -680,7 +680,7 @@ namespace TwitchLib.EventSub.Websockets
         /// Handles 'revocation' notifications
         /// </summary>
         /// <param name="message">notification message received from Twitch EventSub</param>
-        private void HandleRevocation ( string message )
+        private void HandleRevocation(string message)
         {
             if (_handlers != null && _handlers.TryGetValue("revocation", out var handler))
                 handler(this, message, _jsonSerializerOptions);
@@ -693,7 +693,7 @@ namespace TwitchLib.EventSub.Websockets
         /// </summary>
         /// <param name="eventName">name of the event to raise</param>
         /// <param name="args">args to pass with the event</param>
-        internal async void RaiseEvent ( string eventName, object args = null )
+        internal async void RaiseEvent(string eventName, object args = null)
         {
             var fInfo = GetType().GetField(eventName, BindingFlags.Instance | BindingFlags.NonPublic);
 

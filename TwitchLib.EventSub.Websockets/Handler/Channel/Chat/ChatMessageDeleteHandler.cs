@@ -12,7 +12,7 @@ namespace TwitchLib.EventSub.Websockets.Handler.Channel.Chat
     {
         public string SubscriptionType => "channel.chat.message_delete";
 
-        public void Handle ( EventSubWebsocketClient client, string jsonString, JsonSerializerOptions serializerOptions )
+        public void Handle(EventSubWebsocketClient client, string jsonString, JsonSerializerOptions serializerOptions)
         {
             try
             {
